@@ -1,0 +1,540 @@
+{
+  "info": {
+    "name": "Critter Chronologer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "customerId",
+      "value": "1"
+    },
+    {
+      "key": "employeeId",
+      "value": "1"
+    },
+    {
+      "key": "petId",
+      "value": "1"
+    },
+    {
+      "key": "scheduleId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/test",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "test"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Health check returns 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create customer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/user/customer",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "customer"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nandini\",\n  \"phoneNumber\": \"9876543210\",\n  \"notes\": \"Morning appointments\",\n  \"petIds\": []\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Customer created\", () => pm.expect(pm.response.code).to.be.oneOf([200,201])); const x=pm.response.json(); pm.collectionVariables.set(\"customerId\",x.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List customers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/customer",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "customer"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Customers listed\", () => pm.response.to.have.status(200)); pm.test(\"Response is array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/user/employee",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "employee"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Rahul\",\n  \"skills\": [\n    \"FEEDING\",\n    \"WALKING\"\n  ],\n  \"daysAvailable\": [\n    \"MONDAY\",\n    \"WEDNESDAY\",\n    \"FRIDAY\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Employee created\", () => pm.expect(pm.response.code).to.be.oneOf([200,201])); const x=pm.response.json(); pm.collectionVariables.set(\"employeeId\",x.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get employee",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/employee/{{employeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "employee",
+            "{{employeeId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Employee retrieved\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Set employee availability",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/user/employee/{{employeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "employee",
+            "{{employeeId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  \"TUESDAY\",\n  \"THURSDAY\"\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Availability updated\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create pet",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bruno\",\n  \"type\": \"DOG\",\n  \"birthDate\": \"2023-05-10\",\n  \"notes\": \"Friendly dog\",\n  \"ownerId\": {{customerId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Pet created\", () => pm.expect(pm.response.code).to.be.oneOf([200,201])); const x=pm.response.json(); pm.collectionVariables.set(\"petId\",x.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get pet",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Pet retrieved\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get pets by owner",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/owner/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "owner",
+            "{{customerId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Pets by owner retrieved\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find owner by pet",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/customer/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "customer",
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Owner found\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find employees by availability",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/user/employee/availability",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "employee",
+            "availability"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"date\": \"2026-11-03\",\n  \"skills\": [\n    \"FEEDING\",\n    \"WALKING\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Availability query returned\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create schedule",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/schedule",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedule"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"employeeIds\": [{{employeeId}}],\n  \"petIds\": [{{petId}}],\n  \"date\": \"2026-11-04\",\n  \"activities\": [\"FEEDING\", \"WALKING\"]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Schedule created\", () => pm.expect(pm.response.code).to.be.oneOf([200,201])); const x=pm.response.json(); pm.collectionVariables.set(\"scheduleId\",x.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedules by employee",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/schedule/employee/{{employeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedule",
+            "employee",
+            "{{employeeId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Schedules by employee\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedules by pet",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/schedule/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedule",
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Schedules by pet\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedules by customer",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/schedule/customer/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "schedule",
+            "customer",
+            "{{customerId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Schedules by customer\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
